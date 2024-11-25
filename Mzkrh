@@ -1,0 +1,44 @@
+import tkinter as tk
+from tkinter import messagebox
+import json
+
+# دالة لحفظ الملاحظات
+def save_note():
+    note = text_box.get("1.0", tk.END).strip()
+    if note:
+        with open("notes.json", "w") as file:
+            json.dump({"note": note}, file)
+        messagebox.showinfo("حفظ", "تم حفظ الملاحظة بنجاح!")
+    else:
+        messagebox.showwarning("تحذير", "يرجى إدخال ملاحظة")
+
+# دالة لفتح الملاحظة
+def load_note():
+    try:
+        with open("notes.json", "r") as file:
+            data = json.load(file)
+            text_box.insert(tk.END, data["note"])
+    except FileNotFoundError:
+        pass
+
+# إعداد واجهة التطبيق
+root = tk.Tk()
+root.title("تطبيق المذكرات")
+
+# مربع النص لإدخال الملاحظة
+text_box = tk.Text(root, height=10, width=50)
+text_box.pack(pady=20)
+
+# زر لحفظ الملاحظة
+save_button = tk.Button(root, text="حفظ الملاحظة", command=save_note)
+save_button.pack(pady=5)
+
+# زر لتحميل الملاحظة
+load_button = tk.Button(root, text="تحميل الملاحظة", command=load_note)
+load_button.pack(pady=5)
+
+# تحميل الملاحظة عند تشغيل التطبيق
+load_note()
+
+# تشغيل التطبيق
+root.mainloop()
